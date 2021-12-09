@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FindingSumOfString
 {
     public static class TextService
-    { 
+    {
         public static float SumOfString(string line)
         {
-            return line.Split(",").Select(f => float.Parse(f)).Sum(s => s);
-        }        
+            if (line == null)
+                return float.NaN;
+            return line.Split(",").Select(f => float.Parse(f, CultureInfo.InvariantCulture)).Sum(s => s);
+        }
 
         public static List<float> SumEveryString(this List<string> stringList)
         {
@@ -29,17 +30,19 @@ namespace FindingSumOfString
             }
             return result;
         }
-        
-        public static int FindMaxIndexInCollection(this List<float> floatList)
-        { 
-            return floatList.IndexOf(floatList.Max());
+
+        public static int MaxValue(this List<float> list)
+        {
+            if (list == null || list.Count == 0)
+                return 0;
+            return list.IndexOf(list.Max()) + 1;
         }
 
-        public static List<int> FindBrokenSymbolsInCollection(this List<float> floatList)
+        public static List<int> BrokenSymbolsInCollection(this List<float> list)
         {
             int index = 0;
             List<int> result = new();
-            foreach (var item in floatList)
+            foreach (var item in list)
             {
                 if (float.IsNaN(item))
                 {
@@ -47,8 +50,12 @@ namespace FindingSumOfString
                 }
                 index++;
             }
-            return result;
+            if (result.Count == 0)
+            {
+                result.Add(-1);
+                return result;
+            }
+            return result.Select(s => s + 1).ToList();
         }
-
     }
 }
